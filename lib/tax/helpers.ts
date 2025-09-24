@@ -46,3 +46,20 @@ export function splitIncome(incomes: IncomeLike[]): { employeeY: number; zzpY: n
   }
   return { employeeY, zzpY };
 }
+
+// lib/tax/helpers.ts
+
+// ...your other helpers (currency, clamp, piecewise, splitIncome, etc.)
+
+/**
+ * Return a parameter value for a given key/year.
+ * Replace the body with your real data source later.
+ */
+export async function getParam<T = any>(key: string, year: number): Promise<T> {
+  console.warn(`[getParam] Placeholder return for key="${key}" year=${year}`);
+  return {} as T;
+}
+
+// Make sure other helpers are exported as needed, e.g.:
+export { /* currency, clamp, piecewise, splitIncome, ... */ };
+
