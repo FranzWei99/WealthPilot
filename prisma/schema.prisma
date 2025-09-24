@@ -1,16 +1,182 @@
-generator client { provider = "prisma-client-js" }
-datasource db { provider = "postgresql" url = env("DATABASE_URL") }
+generator client {
+  provider = "prisma-client-js"
+}
 
-model User { id String @id @default(cuid()) name String? email String? @unique image String? accounts Account[] sessions Session[] assets Asset[] incomes Income[] expenses Expense[] goals Goal[] createdAt DateTime @default(now()) }
-model Asset { id String @id @default(cuid()) user User @relation(fields: [userId], references: [id]) userId String type String name String value Float @default(0) debt Float @default(0) createdAt DateTime @default(now()) }
-model Income { id String @id @default(cuid()) user User @relation(fields: [userId], references: [id]) userId String type String? name String amount Float @default(0) recurring Boolean @default(true) createdAt DateTime @default(now()) }
-model Expense { id String @id @default(cuid()) user User @relation(fields: [userId], references: [id]) userId String category String? name String amount Float @default(0) recurring Boolean @default(true) createdAt DateTime @default(now()) }
-model Goal { id String @id @default(cuid()) user User @relation(fields: [userId], references: [id]) userId String title String target Float @default(0) current Float @default(0) horizonYears Int @default(5) createdAt DateTime @default(now()) }
-model TaxParam { id String @id @default(cuid()) key String value Json year Int @default(2025) meta Json? @@unique([key, year], name: "key_year") }
-model Person { id String @id @default(cuid()) user User @relation(fields: [userId], references: [id]) userId String name String? partner Boolean @default(false) aow Boolean @default(false) resident Boolean @default(true) household Household? @relation(fields: [householdId], references: [id]) householdId String? }
-model Household { id String @id @default(cuid()) persons Person[] user User @relation(fields: [userId], references: [id]) userId String createdAt DateTime @default(now()) }
-model TaxYearCalc { id String @id @default(cuid()) user User @relation(fields: [userId], references: [id]) userId String year Int taxable_box1 Float @default(0) box1_tax Float @default(0) zvw Float @default(0) heffingskortingen Json @default("{}") box2_tax Float @default(0) box3_tax Float @default(0) vpb Float @default(0) netto_bestede_inkomen Float @default(0) breakdown Json? createdAt DateTime @default(now()) @@unique([userId, year], name:"userId_year") }
-model BV { id String @id @default(cuid()) user User @relation(fields: [userId], references: [id]) userId String name String profit_before_tax Float @default(0) vpb Float @default(0) dga_salary Float @default(0) dividends_paid Float @default(0) year Int @default(2025) createdAt DateTime @default(now()) }
-model Account { id String @id @default(cuid()) userId String type String provider String providerAccountId String refresh_token String? access_token String? expires_at Int? token_type String? scope String? id_token String? session_state String? user User @relation(fields: [userId], references: [id], onDelete: Cascade) @@unique([provider, providerAccountId]) }
-model Session { id String @id @default(cuid()) sessionToken String @unique userId String expires DateTime user User @relation(fields: [userId], references: [id], onDelete: Cascade) }
-model VerificationToken { identifier String token String @unique expires DateTime @@unique([identifier, token]) }
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id        String   @id @default(cuid())
+  name      String?
+  email     String?  @unique
+  image     String?
+
+  accounts  Account[]
+  sessions  Session[]
+  assets    Asset[]
+  incomes   Income[]
+  expenses  Expense[]
+  goals     Goal[]
+
+  createdAt DateTime @default(now())
+}
+
+model Asset {
+  id        String   @id @default(cuid())
+  user      User     @relation(fields: [userId], references: [id])
+  userId    String
+
+  type      String
+  name      String
+  value     Float    @default(0)
+  debt      Float    @default(0)
+
+  createdAt DateTime @default(now())
+}
+
+model Income {
+  id        String   @id @default(cuid())
+  user      User     @relation(fields: [userId], references: [id])
+  userId    String
+
+  type      String?
+  name      String
+  amount    Float    @default(0)
+  recurring Boolean  @default(true)
+
+  createdAt DateTime @default(now())
+}
+
+model Expense {
+  id        String   @id @default(cuid())
+  user      User     @relation(fields: [userId], references: [id])
+  userId    String
+
+  category  String?
+  name      String
+  amount    Float    @default(0)
+  recurring Boolean  @default(true)
+
+  createdAt DateTime @default(now())
+}
+
+model Goal {
+  id           String   @id @default(cuid())
+  user         User     @relation(fields: [userId], references: [id])
+  userId       String
+
+  title        String
+  target       Float    @default(0)
+  current      Float    @default(0)
+  horizonYears Int      @default(5)
+
+  createdAt    DateTime @default(now())
+}
+
+model TaxParam {
+  id    String @id @default(cuid())
+  key   String
+  value Json
+  year  Int    @default(2025)
+  meta  Json?
+
+  @@unique([key, year], name: "key_year")
+}
+
+model Person {
+  id          String    @id @default(cuid())
+  user        User      @relation(fields: [userId], references: [id])
+  userId      String
+
+  name        String?
+  partner     Boolean   @default(false)
+  aow         Boolean   @default(false)
+  resident    Boolean   @default(true)
+
+  household   Household? @relation(fields: [householdId], references: [id])
+  householdId String?
+}
+
+model Household {
+  id        String   @id @default(cuid())
+  persons   Person[]
+  user      User     @relation(fields: [userId], references: [id])
+  userId    String
+  createdAt DateTime @default(now())
+}
+
+model TaxYearCalc {
+  id                    String   @id @default(cuid())
+  user                  User     @relation(fields: [userId], references: [id])
+  userId                String
+  year                  Int
+
+  taxable_box1          Float    @default(0)
+  box1_tax              Float    @default(0)
+  zvw                   Float    @default(0)
+  heffingskortingen     Json     @default("{}")
+  box2_tax              Float    @default(0)
+  box3_tax              Float    @default(0)
+  vpb                   Float    @default(0)
+  netto_bestede_inkomen Float    @default(0)
+  breakdown             Json?
+
+  createdAt             DateTime @default(now())
+
+  @@unique([userId, year], name: "userId_year")
+}
+
+model BV {
+  id                String   @id @default(cuid())
+  user              User     @relation(fields: [userId], references: [id])
+  userId            String
+
+  name              String
+  profit_before_tax Float    @default(0)
+  vpb               Float    @default(0)
+  dga_salary        Float    @default(0)
+  dividends_paid    Float    @default(0)
+  year              Int      @default(2025)
+
+  createdAt         DateTime @default(now())
+}
+
+/* NextAuth models */
+
+model Account {
+  id                 String  @id @default(cuid())
+  userId             String
+  type               String
+  provider           String
+  providerAccountId  String
+  refresh_token      String?
+  access_token       String?
+  expires_at         Int?
+  token_type         String?
+  scope              String?
+  id_token           String?
+  session_state      String?
+
+  user               User    @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([provider, providerAccountId])
+}
+
+model Session {
+  id           String   @id @default(cuid())
+  sessionToken String   @unique
+  userId       String
+  expires      DateTime
+
+  user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+model VerificationToken {
+  identifier String
+  token      String   @unique
+  expires    DateTime
+
+  @@unique([identifier, token])
+}
