@@ -1,3 +1,4 @@
+export const runtime = 'nodejs';
 import { auth } from "@/lib/auth";
 import { combine_tax_year } from "@/lib/tax/engine";
 export async function POST(){
