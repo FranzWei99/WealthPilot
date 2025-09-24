@@ -1,2 +1,3 @@
+export const runtime = 'nodejs';
 import { prisma } from "@/lib/prisma";
 export async function POST(req:Request){ const { fromYear, toYear } = await req.json(); const rows = await prisma.taxParam.findMany({ where:{ year: fromYear } }); for (const r of rows){ await prisma.taxParam.upsert({ where:{ key_year:{ key: r.key, year: toYear } }, update:{ value: r.value, meta: r.meta }, create:{ key:r.key, value:r.value, year:toYear, meta:r.meta } }); } return Response.json({ ok:true, count: rows.length }); }
