@@ -3,7 +3,7 @@
 
 import { prisma } from "@/lib/prisma";
 // Keep your existing getParam implementation and import path as-is:
-import { getParam } from "@/lib/tax/params";
+import { getParam } from "@/lib/tax/helpers";
 import { clamp, currency, piecewise, splitIncome } from "./helpers";
 
 // ---- Box 1 ---------------------------------------------------------------
