@@ -143,7 +143,7 @@ model BV {
   createdAt         DateTime @default(now())
 }
 
-/* NextAuth models */
+// NextAuth models
 
 model Account {
   id                 String  @id @default(cuid())
