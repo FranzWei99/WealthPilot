@@ -108,3 +108,37 @@ export async function saveTaxYearCalc(input: TaxCalcInput): Promise<TaxYearCalc>
 
   return row;
 }
+// Minimal end-to-end calculator that upserts a row and returns it.
+// Adjust the computations/TODOs to your real logic.
+export async function combine_tax_year(userId: string, year: number) {
+  // TODO: replace with your real calculations (pull incomes/expenses/etc.)
+  const taxable_box1 = 0;
+  const box1_tax = 0;
+  const zvw = 0;
+  const box2_tax = 0;
+  const box3_tax = 0;
+  const vpb = 0;
+  const netto_bestede_inkomen = 0;
+
+  // Example JSONs; keep them JSON-serializable
+  const heffingskortingen = {};
+  const breakdown = {
+    note: "placeholder calculation – replace with real values",
+  };
+
+  const row = await saveTaxYearCalc({
+    userId,
+    year,
+    taxable_box1,
+    box1_tax,
+    zvw,
+    box2_tax,
+    box3_tax,
+    vpb,
+    netto_bestede_inkomen,
+    heffingskortingen,
+    breakdown,
+  });
+
+  return row;
+}
